@@ -1,32 +1,27 @@
-package com.leverx.dealerstat.entity;
+package com.leverx.dealerstat.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "comment", catalog = "dealerstatdb")
-@EntityListeners(AuditingEntityListener.class)
-public class Comment {
+public class CreateCommentDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String text;
     private int rating;
-    @CreationTimestamp
-    @Column(name = "created_at")
     private Date dateOfCreation;
     private boolean approved;
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    public CreateCommentDTO() {
 
-    public Comment() {
+    }
+
+    public CreateCommentDTO(Long id, String text, int rating, Date dateOfCreation, boolean approved, Long userId) {
+        this.id = id;
+        this.text = text;
+        this.rating = rating;
+        this.dateOfCreation = dateOfCreation;
+        this.approved = approved;
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -69,12 +64,11 @@ public class Comment {
         this.approved = approved;
     }
 
-    @JsonIgnore
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

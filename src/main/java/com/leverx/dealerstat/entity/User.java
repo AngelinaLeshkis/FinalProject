@@ -1,11 +1,16 @@
 package com.leverx.dealerstat.entity;
 
-        import javax.persistence.*;
-        import java.util.Date;
-        import java.util.List;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "user", catalog = "dealerstatdb")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -15,7 +20,9 @@ public class User {
     private String lastName;
     private String password;
     private String email;
-    private Date dateOfCreation;
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private Date createdAt;
     private Role role;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -64,12 +71,12 @@ public class User {
         this.email = email;
     }
 
-    public Date getDateOfCreation() {
-        return dateOfCreation;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setDateOfCreation(Date dateOfCreation) {
-        this.dateOfCreation = dateOfCreation;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Role getRole() {

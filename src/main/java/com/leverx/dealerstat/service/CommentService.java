@@ -1,19 +1,21 @@
 package com.leverx.dealerstat.service;
 
+import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentService {
 
-    Comment saveComment(Comment comment);
+    Comment saveComment(CreateCommentDTO comment);
 
-    List<Comment> getPostsByTraderId(Long id);
+    List<Comment> getCommentsByTraderId(Long id);
 
     void deleteCommentByCommentId(Long id);
 
-    List<Comment> getComments();
+    List<CreateCommentDTO> getComments();
 
-    Comment getCommentByCommentId(Long id);
+    Optional<Comment> getCommentByCommentId(Long id);
 
     Comment updateComment(Comment comment);
 }
