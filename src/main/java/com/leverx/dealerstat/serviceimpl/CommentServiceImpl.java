@@ -28,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment saveComment(CreateCommentDTO commentDTO) {
         User user = userRepo.findById(commentDTO.getUserId())
-                .orElseThrow(()-> new RuntimeException("User not found with id = " + commentDTO.getUserId()));
+                .orElseThrow(() -> new RuntimeException("User not found with id = " + commentDTO.getUserId()));
         Comment comment = new Comment();
         comment.setApproved(commentDTO.isApproved());
         comment.setUser(user);
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
         Iterable<Comment> comments = new ArrayList<>();
         comments = commentRepo.findAll();
         List<CreateCommentDTO> commentsWithUsers = new ArrayList<>();
-        for (Comment comment: comments) {
+        for (Comment comment : comments) {
             CreateCommentDTO commentWithUser = new CreateCommentDTO();
             commentWithUser.setId(comment.getId());
             commentWithUser.setDateOfCreation(comment.getDateOfCreation());
@@ -67,12 +67,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Optional<Comment> getCommentByCommentId(Long id) {
-        return commentRepo.findById(id);
+    public CreateCommentDTO getCommentByCommentId(Long id) {
+        Optional<Comment> comment = commentRepo.findById(id);
+        CreateCommentDTO commentDTO = new CreateCommentDTO();
+        commentDTO.setId(comment.get().getId());
+        commentDTO.setText(comment.get().getText());
+        commentDTO.setRating(comment.get().getRating());
+        commentDTO.setApproved(comment.get().isApproved());
+        commentDTO.setDateOfCreation(comment.get().getDateOfCreation());
+        commentDTO.setUserId(comment.get().getUser().getId());
+        return commentDTO;
     }
 
     @Override
     public Comment updateComment(Comment comment) {
         return commentRepo.save(comment);
     }
+
 }
