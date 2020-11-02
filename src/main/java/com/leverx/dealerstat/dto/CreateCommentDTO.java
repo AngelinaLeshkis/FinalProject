@@ -9,19 +9,20 @@ public class CreateCommentDTO {
     private int rating;
     private Date dateOfCreation;
     private boolean approved;
-    private Long userId;
+    private Long traderId;
 
     public CreateCommentDTO() {
 
     }
 
-    public CreateCommentDTO(Long id, String text, int rating, Date dateOfCreation, boolean approved, Long userId) {
+    public CreateCommentDTO(Long id, String text, int rating, Date dateOfCreation,
+                            boolean approved, Long traderId) {
         this.id = id;
         this.text = text;
         this.rating = rating;
         this.dateOfCreation = dateOfCreation;
         this.approved = approved;
-        this.userId = userId;
+        this.traderId = traderId;
     }
 
     public Long getId() {
@@ -64,11 +65,11 @@ public class CreateCommentDTO {
         this.approved = approved;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getTraderId() {
+        return traderId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setTraderId(Long traderId) {
+        this.traderId = traderId;
     }
 }

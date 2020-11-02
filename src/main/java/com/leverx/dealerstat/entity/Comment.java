@@ -24,8 +24,8 @@ public class Comment {
     private boolean approved;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "trader_id", nullable = false)
+    private Trader trader;
 
     public Comment() {
     }
@@ -71,11 +71,11 @@ public class Comment {
     }
 
     @JsonIgnore
-    public User getUser() {
-        return user;
+    public Trader getTrader() {
+        return trader;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setTrader(Trader trader) {
+        this.trader = trader;
     }
 }

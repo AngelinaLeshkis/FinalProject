@@ -2,8 +2,10 @@ package com.leverx.dealerstat.serviceimpl;
 
 import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
+import com.leverx.dealerstat.entity.Trader;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.persistence.CommentRepository;
+import com.leverx.dealerstat.persistence.TraderRepository;
 import com.leverx.dealerstat.persistence.UserRepository;
 import com.leverx.dealerstat.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +19,21 @@ import java.util.Optional;
 public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepo;
-    private UserRepository userRepo;
+    private TraderRepository traderRepo;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepo, UserRepository userRepo) {
+    public CommentServiceImpl(CommentRepository commentRepo, TraderRepository traderRepo) {
         this.commentRepo = commentRepo;
-        this.userRepo = userRepo;
+        this.traderRepo = traderRepo;
     }
 
     @Override
     public Comment saveComment(CreateCommentDTO commentDTO) {
-        User user = userRepo.findById(commentDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id = " + commentDTO.getUserId()));
+        Trader trader = traderRepo.findById(commentDTO.getTraderId())
+                .orElseThrow(() -> new RuntimeException("User not found with id = " + commentDTO.getTraderId()));
         Comment comment = new Comment();
         comment.setApproved(commentDTO.isApproved());
-        comment.setUser(user);
+        comment.setTrader(trader);
         comment.setDateOfCreation(commentDTO.getDateOfCreation());
         comment.setRating(commentDTO.getRating());
         comment.setText(commentDTO.getText());
@@ -40,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> getCommentsByTraderId(Long id) {
-        return commentRepo.findCommentsByUserId(id);
+        return commentRepo.findCommentsByTraderId(id);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
             commentWithUser.setApproved(comment.isApproved());
             commentWithUser.setRating(comment.getRating());
             commentWithUser.setText(comment.getText());
-            commentWithUser.setUserId(comment.getUser().getId());
+            commentWithUser.setTraderId(comment.getTrader().getId());
             commentsWithUsers.add(commentWithUser);
         }
         return commentsWithUsers;
@@ -75,7 +77,7 @@ public class CommentServiceImpl implements CommentService {
         commentDTO.setRating(comment.get().getRating());
         commentDTO.setApproved(comment.get().isApproved());
         commentDTO.setDateOfCreation(comment.get().getDateOfCreation());
-        commentDTO.setUserId(comment.get().getUser().getId());
+        commentDTO.setTraderId(comment.get().getTrader().getId());
         return commentDTO;
     }
 

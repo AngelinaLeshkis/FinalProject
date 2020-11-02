@@ -25,9 +25,6 @@ public class User {
     private Date createdAt;
     private Role role;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<Comment> comments;
-
     public User() {
     }
 
@@ -87,11 +84,4 @@ public class User {
         this.role = role;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
 }
