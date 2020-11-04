@@ -3,10 +3,12 @@ package com.leverx.dealerstat.serviceimpl;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.persistence.UserRepository;
 import com.leverx.dealerstat.service.UserService;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,6 +22,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
+        user.setEnabled(false);
+        String randomCode = RandomString.make(10);
         return userRepo.save(user);
     }
 

@@ -21,7 +21,7 @@ public class User {
     private String password;
     private String email;
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
     private Role role;
 

@@ -19,6 +19,7 @@ public class Trader {
     @CreationTimestamp
     @Column(name = "created_at")
     private Date createdAt;
+    private boolean approved;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "trader")
     private List<Comment> comments;
@@ -53,5 +54,13 @@ public class Trader {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 }
