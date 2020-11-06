@@ -1,11 +1,12 @@
 package com.leverx.dealerstat.service;
 
 import com.leverx.dealerstat.entity.User;
+
 import java.util.Optional;
 
 public interface UserService {
 
-    User saveUser(User user);
+    boolean saveUser(User user);
 
     void deleteUser(Long id);
 
@@ -16,4 +17,6 @@ public interface UserService {
     Optional<User> getUserById(Long id);
 
     User auth(String email, String password);
+
+    String getHashByUserId(Long id);
 }

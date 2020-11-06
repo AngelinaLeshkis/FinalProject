@@ -4,6 +4,7 @@ import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.service.UserService;
 import com.leverx.dealerstat.serviceimpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/registration")
-    public User saveUser(@RequestBody User user) {
+    public String saveUser(@RequestBody User user) {
         userService.saveUser(user);
-        return user;
+        return "user";
     }
 
     @GetMapping(value = "")
@@ -35,6 +36,11 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable long id) {
         Optional<User> user = userService.getUserById(id);
         return user.isPresent() ? ResponseEntity.ok(user.get()) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(value = "/userHash/{id}")
+    public String getHashByUserId(@PathVariable long id) {
+        return userService.getHashByUserId(id);
     }
 
     @DeleteMapping(value = "/deleteUser/{id}")
