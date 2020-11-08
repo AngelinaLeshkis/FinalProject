@@ -1,7 +1,6 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.entity.Trader;
-import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.serviceimpl.TraderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

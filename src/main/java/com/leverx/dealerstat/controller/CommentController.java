@@ -2,7 +2,6 @@ package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
-import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.serviceimpl.CommentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

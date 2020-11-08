@@ -3,7 +3,6 @@ package com.leverx.dealerstat.serviceimpl;
 import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.entity.Trader;
-import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.persistence.CommentRepository;
 import com.leverx.dealerstat.persistence.TraderRepository;
 import com.leverx.dealerstat.persistence.UserRepository;

@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface UserService {
 
-    boolean saveUser(User user);
+    User saveUser(User user);
 
     void deleteUser(Long id);
 
@@ -14,9 +14,9 @@ public interface UserService {
 
     Iterable<User> getUsers();
 
-    Optional<User> getUserById(Long id);
-
-    User auth(String email, String password);
+    User getUserById(Long id);
 
     String getHashByUserId(Long id);
+
+    User getUserByEmail(String email);
 }

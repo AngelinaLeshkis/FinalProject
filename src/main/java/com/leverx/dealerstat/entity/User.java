@@ -1,7 +1,6 @@
 package com.leverx.dealerstat.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -21,7 +20,7 @@ public class User {
     private String password;
     private String email;
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private Date createdAt;
     private Role role;
 
