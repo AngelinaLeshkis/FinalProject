@@ -19,12 +19,14 @@ public class User {
     private String lastName;
     private String password;
     private String email;
+    private boolean enabled;
     @CreationTimestamp
     @Column(name = "created_at")
     private Date createdAt;
     private Role role;
 
     public User() {
+        this.enabled = false;
     }
 
     public Long getId() {
@@ -83,4 +85,11 @@ public class User {
         this.role = role;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

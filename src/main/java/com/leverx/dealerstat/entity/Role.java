@@ -3,7 +3,7 @@ package com.leverx.dealerstat.entity;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Role {
-    ROLE_ADMIN("ADMIN"), ROLE_USER("USER");
+    ADMIN("ROLE_ADMIN"), USER("ROLE_USER");
 
     private String valueOfRole;
 

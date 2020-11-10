@@ -3,7 +3,10 @@ package com.leverx.dealerstat.controller;
 import com.leverx.dealerstat.dto.AuthenticationRequestDTO;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.security.JwtTokenProvider;
+import com.leverx.dealerstat.security.JwtUserDetailsService;
 import com.leverx.dealerstat.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,10 +25,10 @@ import java.util.Map;
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final UserService userService;
+
+    private static final Logger logger = LogManager.getLogger(AuthenticationController.class);
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider,
@@ -47,6 +50,7 @@ public class AuthenticationController {
             }
 
             String token = jwtTokenProvider.createToken(email, user.getRole().getValueOfRole());
+            logger.info(user.getRole().getValueOfRole());
 
             Map<Object, Object> response = new HashMap<>();
             response.put("email", email);

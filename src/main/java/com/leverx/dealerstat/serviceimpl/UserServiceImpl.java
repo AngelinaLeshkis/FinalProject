@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.serviceimpl;
 
+import com.leverx.dealerstat.SendEmailService;
 import com.leverx.dealerstat.entity.Role;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.persistence.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
@@ -19,15 +21,16 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate<Long, String> redisTemplate;
     private HashOperations hashOperations;
     private BCryptPasswordEncoder passwordEncoder;
-
+    private SendEmailService mailSender;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepo, RedisTemplate<Long, String> redisTemplate,
-                           BCryptPasswordEncoder passwordEncoder) {
+                           BCryptPasswordEncoder passwordEncoder, SendEmailService sendEmailService) {
         this.userRepo = userRepo;
         this.redisTemplate = redisTemplate;
         this.hashOperations = redisTemplate.opsForHash();
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = sendEmailService;
     }
 
     @Override
@@ -38,11 +41,25 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        user.setRole(Role.ROLE_USER);
+        user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User registeredUser = userRepo.save(user);
-        String randomCode = UUID.randomUUID().toString();
-        hashOperations.put("USER", user.getId(), randomCode);
+        String activationCode = UUID.randomUUID().toString();
+        hashOperations.put("USER", user.getId(), activationCode);
+
+        if (!StringUtils.isEmpty(user.getEmail())) {
+            String message = String.format(
+                    "Hello, %s %s! \n" +
+                            "Welcome to DealerStat. Please, visit next link to activate your account: http://localhost:8080/activate/%s/%d",
+                    user.getFirstName(),
+                    user.getLastName(),
+                    hashOperations.get("USER", user.getId()),
+                    user.getId()
+
+            );
+            mailSender.sendEmail(user.getEmail(), message, "Activation code");
+        }
+
         return registeredUser;
     }
 
@@ -75,5 +92,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByEmail(String email) {
         return userRepo.findUserByEmail(email);
+    }
+
+    @Override
+    public boolean activateUser(String code, Long id) {
+        User user = userRepo.findById(id).orElse(null);
+
+        if (user == null) {
+            return false;
+        }
+
+        user.setEnabled(true);
+        code = null;
+        userRepo.save(user);
+
+        return true;
     }
 }

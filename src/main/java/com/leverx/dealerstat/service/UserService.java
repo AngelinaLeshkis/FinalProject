@@ -19,4 +19,7 @@ public interface UserService {
     String getHashByUserId(Long id);
 
     User getUserByEmail(String email);
+
+    boolean activateUser(String activationCode, Long id);
+
 }

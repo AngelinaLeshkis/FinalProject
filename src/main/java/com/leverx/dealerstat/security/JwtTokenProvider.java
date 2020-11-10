@@ -1,8 +1,8 @@
 package com.leverx.dealerstat.security;
 
-import com.leverx.dealerstat.entity.Role;
-import com.leverx.dealerstat.entity.User;
 import io.jsonwebtoken.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +22,8 @@ import java.util.List;
 
 @Component
 public class JwtTokenProvider {
+
+    private static final Logger logger = LogManager.getLogger(JwtTokenProvider.class);
 
     @Value("${jwt.token.secret}")
     private String secret;
@@ -48,6 +50,8 @@ public class JwtTokenProvider {
 
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", getRoleName(userRole));
+        logger.info(getRoleName(userRole));
+
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -71,9 +75,19 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
+//        if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
+//            return bearerToken.substring(7, bearerToken.length());
+//        }
+        logger.info(bearerToken);
+
+        if (bearerToken != null) {
+            if (bearerToken.startsWith("Bearer_")) {
             return bearerToken.substring(7, bearerToken.length());
         }
+        }
+//        logger.info(bearerToken.startsWith("_"));
+//       logger.info(bearerToken.substring(7, bearerToken.length()));
+
         return null;
     }
 
