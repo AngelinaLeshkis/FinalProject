@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.service;
 
+import com.leverx.dealerstat.dto.AuthenticationRequestDTO;
 import com.leverx.dealerstat.entity.User;
 
 import java.util.Optional;
@@ -16,10 +17,8 @@ public interface UserService {
 
     User getUserById(Long id);
 
-    String getHashByUserId(Long id);
-
     User getUserByEmail(String email);
 
-    boolean activateUser(String activationCode, Long id);
+    User setNewPassword(AuthenticationRequestDTO authenticationRequestDTO);
 
 }

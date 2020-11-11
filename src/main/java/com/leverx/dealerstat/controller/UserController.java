@@ -4,7 +4,6 @@ import com.leverx.dealerstat.dto.UserDTO;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.serviceimpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,11 +42,6 @@ public class UserController {
 
         UserDTO result = UserDTO.fromUser(user);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/user/userHash/{id}")
-    public String getHashByUserId(@PathVariable long id) {
-        return userService.getHashByUserId(id);
     }
 
     @DeleteMapping(value = "/user/deleteUser/{id}")

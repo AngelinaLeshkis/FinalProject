@@ -1,36 +1,29 @@
 package com.leverx.dealerstat.serviceimpl;
 
-import com.leverx.dealerstat.SendEmailService;
+import com.leverx.dealerstat.dto.AuthenticationRequestDTO;
 import com.leverx.dealerstat.entity.Role;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.persistence.UserRepository;
+import com.leverx.dealerstat.pojo.VerificationToken;
 import com.leverx.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepo;
-    private RedisTemplate<Long, String> redisTemplate;
-    private HashOperations hashOperations;
     private BCryptPasswordEncoder passwordEncoder;
-    private SendEmailService mailSender;
+    private ActivationUserAccountServiceImpl activationUserAccountService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepo, RedisTemplate<Long, String> redisTemplate,
-                           BCryptPasswordEncoder passwordEncoder, SendEmailService sendEmailService) {
+    public UserServiceImpl(UserRepository userRepo, BCryptPasswordEncoder passwordEncoder,
+                           ActivationUserAccountServiceImpl activationUserAccountService) {
         this.userRepo = userRepo;
-        this.redisTemplate = redisTemplate;
-        this.hashOperations = redisTemplate.opsForHash();
         this.passwordEncoder = passwordEncoder;
-        this.mailSender = sendEmailService;
+        this.activationUserAccountService = activationUserAccountService;
     }
 
     @Override
@@ -44,23 +37,19 @@ public class UserServiceImpl implements UserService {
         user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User registeredUser = userRepo.save(user);
-        String activationCode = UUID.randomUUID().toString();
-        hashOperations.put("USER", user.getId(), activationCode);
-
-        if (!StringUtils.isEmpty(user.getEmail())) {
-            String message = String.format(
-                    "Hello, %s %s! \n" +
-                            "Welcome to DealerStat. Please, visit next link to activate your account: http://localhost:8080/activate/%s/%d",
-                    user.getFirstName(),
-                    user.getLastName(),
-                    hashOperations.get("USER", user.getId()),
-                    user.getId()
-
-            );
-            mailSender.sendEmail(user.getEmail(), message, "Activation code");
-        }
+        String token = activationUserAccountService.createVerificationTokenForUser(registeredUser);
+        activationUserAccountService.sendEmailToConfirmRegistration(token, registeredUser);
 
         return registeredUser;
+    }
+
+    @Override
+    public User setNewPassword(AuthenticationRequestDTO authenticationRequestDTO) {
+        User userFromDB = userRepo.findUserByEmail(authenticationRequestDTO.getEmail());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        userFromDB.setPassword(passwordEncoder.encode(authenticationRequestDTO.getPassword()));
+        userRepo.save(userFromDB);
+        return userFromDB;
     }
 
     @Override
@@ -80,13 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        User result = userRepo.findById(id).orElse(null);
-        return result;
-    }
-
-    @Override
-    public String getHashByUserId(Long id) {
-        return (String) hashOperations.get("USER", id);
+        return userRepo.findById(id).orElse(null);
     }
 
     @Override
@@ -94,18 +77,4 @@ public class UserServiceImpl implements UserService {
         return userRepo.findUserByEmail(email);
     }
 
-    @Override
-    public boolean activateUser(String code, Long id) {
-        User user = userRepo.findById(id).orElse(null);
-
-        if (user == null) {
-            return false;
-        }
-
-        user.setEnabled(true);
-        code = null;
-        userRepo.save(user);
-
-        return true;
-    }
 }

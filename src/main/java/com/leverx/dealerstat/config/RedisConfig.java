@@ -5,10 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-
 @Configuration
 public class RedisConfig {
 

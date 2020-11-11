@@ -3,7 +3,6 @@ package com.leverx.dealerstat.controller;
 import com.leverx.dealerstat.dto.AuthenticationRequestDTO;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.security.JwtTokenProvider;
-import com.leverx.dealerstat.security.JwtUserDetailsService;
 import com.leverx.dealerstat.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
