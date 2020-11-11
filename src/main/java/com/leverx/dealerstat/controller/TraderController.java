@@ -1,21 +1,20 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.entity.Trader;
-import com.leverx.dealerstat.serviceimpl.TraderServiceImpl;
+import com.leverx.dealerstat.service.TraderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/traders")
 public class TraderController {
 
-    private TraderServiceImpl traderService;
+    private TraderService traderService;
 
     @Autowired
-    public TraderController(TraderServiceImpl traderService) {
+    public TraderController(TraderService traderService) {
         this.traderService = traderService;
     }
 
@@ -31,13 +30,18 @@ public class TraderController {
     }
 
     @GetMapping(value = "/trader/{id}")
-    public ResponseEntity<Trader> getUserById(@PathVariable long id) {
-        Optional<Trader> trader = traderService.getTraderById(id);
-        return trader.isPresent() ? ResponseEntity.ok(trader.get()) : ResponseEntity.notFound().build();
+    public ResponseEntity<Trader> getUserById(@PathVariable(name = "id") Long id) {
+        Trader trader = traderService.getTraderById(id);
+
+        if (trader == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(trader, HttpStatus.OK);
+        }
     }
 
     @DeleteMapping(value = "/deleteTrader/{id}")
-    public void deleteTrader(@PathVariable Long id) {
+    public void deleteTrader(@PathVariable(name = "id") Long id) {
         traderService.deleteTrader(id);
     }
 }

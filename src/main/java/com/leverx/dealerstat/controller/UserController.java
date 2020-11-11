@@ -2,6 +2,7 @@ package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.dto.UserDTO;
 import com.leverx.dealerstat.entity.User;
+import com.leverx.dealerstat.service.UserService;
 import com.leverx.dealerstat.serviceimpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,20 +12,23 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
 
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
-    public UserController(UserServiceImpl userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping(value = "/registration")
-    public User saveUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> saveUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user);
-        if (savedUser != null) {
-            return savedUser;
+
+        if (savedUser == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-        return null;
+
+        UserDTO result = UserDTO.fromUser(user);
+        return  new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping(value = "/user/users")
@@ -33,10 +37,10 @@ public class UserController {
     }
 
     @GetMapping(value = "/user/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable(name = "id") Long id) {
         User user = userService.getUserById(id);
 
-        if(user == null){
+        if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
@@ -45,7 +49,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/user/deleteUser/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@PathVariable(name = "id") Long id) {
         userService.deleteUser(id);
     }
 

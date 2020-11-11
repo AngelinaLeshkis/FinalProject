@@ -1,5 +1,7 @@
 package com.leverx.dealerstat.dto;
 
+import com.leverx.dealerstat.entity.Comment;
+
 import java.util.Date;
 
 public class CreateCommentDTO {

@@ -5,7 +5,6 @@ import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.entity.Trader;
 import com.leverx.dealerstat.persistence.CommentRepository;
 import com.leverx.dealerstat.persistence.TraderRepository;
-import com.leverx.dealerstat.persistence.UserRepository;
 import com.leverx.dealerstat.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,13 +29,18 @@ public class CommentServiceImpl implements CommentService {
     public Comment saveComment(CreateCommentDTO commentDTO) {
         Trader trader = traderRepo.findById(commentDTO.getTraderId())
                 .orElseThrow(() -> new RuntimeException("User not found with id = " + commentDTO.getTraderId()));
-        Comment comment = new Comment();
-        comment.setApproved(commentDTO.isApproved());
-        comment.setTrader(trader);
-        comment.setDateOfCreation(commentDTO.getDateOfCreation());
-        comment.setRating(commentDTO.getRating());
-        comment.setText(commentDTO.getText());
-        return commentRepo.save(comment);
+
+        if (trader.isApproved()) {
+            Comment comment = new Comment();
+            comment.setApproved(commentDTO.isApproved());
+            comment.setTrader(trader);
+            comment.setDateOfCreation(commentDTO.getDateOfCreation());
+            comment.setRating(commentDTO.getRating());
+            comment.setText(commentDTO.getText());
+            return commentRepo.save(comment);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -51,8 +55,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CreateCommentDTO> getComments() {
-        Iterable<Comment> comments = new ArrayList<>();
-        comments = commentRepo.findAll();
+        Iterable<Comment> comments = commentRepo.findAll();
         List<CreateCommentDTO> commentsWithUsers = new ArrayList<>();
         for (Comment comment : comments) {
             CreateCommentDTO commentWithUser = new CreateCommentDTO();
@@ -85,4 +88,21 @@ public class CommentServiceImpl implements CommentService {
         return commentRepo.save(comment);
     }
 
+    @Override
+    public Comment approveComment(Long id) {
+        Comment savedComment = commentRepo.findById(id).orElse(null);
+        savedComment.setApproved(true);
+        commentRepo.save(savedComment);
+
+        return savedComment;
+    }
+
+    @Override
+    public Comment declineComment(Long id) {
+        Comment savedComment = commentRepo.findById(id).orElse(null);
+        savedComment.setApproved(false);
+        commentRepo.save(savedComment);
+
+        return savedComment;
+    }
 }

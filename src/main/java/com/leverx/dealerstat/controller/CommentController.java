@@ -2,20 +2,18 @@ package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
-import com.leverx.dealerstat.serviceimpl.CommentServiceImpl;
+import com.leverx.dealerstat.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/users")
 public class CommentController {
 
-    private CommentServiceImpl commentService;
+    private CommentService commentService;
 
     @Autowired
-    public CommentController(CommentServiceImpl commentService) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
 
@@ -35,7 +33,7 @@ public class CommentController {
     }
 
     @GetMapping(value = "/{id}/comments")
-    public Iterable<Comment> getCommentsByUserId(@PathVariable(name = "id") long id) {
+    public Iterable<Comment> getCommentsByUserId(@PathVariable(name = "id") Long id) {
         return commentService.getCommentsByTraderId(id);
     }
 

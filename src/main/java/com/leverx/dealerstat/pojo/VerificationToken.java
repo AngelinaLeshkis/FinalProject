@@ -5,11 +5,13 @@ import org.springframework.data.redis.core.RedisHash;
 import java.io.Serializable;
 import java.util.Date;
 
-@RedisHash(value = "USER", timeToLive = 86400000)
+@RedisHash(value = "USER", timeToLive = 86400000L)
 public class VerificationToken implements Serializable {
 
     private Long id;
     private Date timeOfCreation;
+
+    private static final Long expiredTime = 86400000L;
 
     public VerificationToken() {
     }
@@ -33,5 +35,9 @@ public class VerificationToken implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public static Long getExpiredTime() {
+        return expiredTime;
     }
 }

@@ -14,5 +14,9 @@ public interface TraderService {
 
     Iterable<Trader> getTraders();
 
-    Optional<Trader> getTraderById(Long id);
+    Trader getTraderById(Long id);
+
+    Trader approveTrader(Long id);
+
+    Trader declineTrader(Long id);
 }

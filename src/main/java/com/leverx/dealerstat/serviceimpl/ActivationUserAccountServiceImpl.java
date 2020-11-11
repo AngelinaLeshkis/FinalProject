@@ -22,8 +22,6 @@ public class ActivationUserAccountServiceImpl implements ActivationUserAccountSe
     private SendEmailService mailSender;
     private UserRepository userRepo;
 
-    private static final Long expiredTime = 86400000L;
-
     public ActivationUserAccountServiceImpl(RedisTemplate<Long, String> redisTemplate, SendEmailService mailSender,
                                             UserRepository userRepo) {
         this.redisTemplate = redisTemplate;
@@ -60,7 +58,7 @@ public class ActivationUserAccountServiceImpl implements ActivationUserAccountSe
     public boolean activateUser(String token) {
         Date date = new Date();
         VerificationToken verificationToken = getVerificationTokenFromRedis(token);
-        if ((date.getTime() - verificationToken.getTimeOfCreation().getTime()) > expiredTime) {
+        if ((date.getTime() - verificationToken.getTimeOfCreation().getTime()) > VerificationToken.getExpiredTime()) {
             return false;
         }
 
@@ -88,7 +86,7 @@ public class ActivationUserAccountServiceImpl implements ActivationUserAccountSe
                     token
 
             );
-            mailSender.sendEmail(user.getEmail(), message, "Activation code");
+            mailSender.sendEmail(user.getEmail(), message, "Reset password code");
         }
     }
 

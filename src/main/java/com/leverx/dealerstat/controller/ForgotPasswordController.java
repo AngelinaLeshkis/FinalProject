@@ -2,21 +2,24 @@ package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.dto.AuthenticationRequestDTO;
 import com.leverx.dealerstat.dto.ForgotPasswordRequestDTO;
+import com.leverx.dealerstat.dto.UserDTO;
 import com.leverx.dealerstat.entity.User;
-import com.leverx.dealerstat.serviceimpl.ActivationUserAccountServiceImpl;
-import com.leverx.dealerstat.serviceimpl.UserServiceImpl;
+import com.leverx.dealerstat.service.ActivationUserAccountService;
+import com.leverx.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ForgotPasswordController {
 
-    private UserServiceImpl userService;
-    private ActivationUserAccountServiceImpl activationUserAccountService;
+    private UserService userService;
+    private ActivationUserAccountService activationUserAccountService;
 
     @Autowired
-    public ForgotPasswordController(UserServiceImpl userService,
-                                    ActivationUserAccountServiceImpl activationUserAccountService) {
+    public ForgotPasswordController(UserService userService,
+                                    ActivationUserAccountService activationUserAccountService) {
         this.userService = userService;
         this.activationUserAccountService = activationUserAccountService;
     }
@@ -35,23 +38,25 @@ public class ForgotPasswordController {
     }
 
     @PostMapping(value = "/auth/reset")
-    public String resetPassword(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+    public ResponseEntity<UserDTO> resetPassword(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
         User userFromDB = userService.getUserByEmail(authenticationRequestDTO.getEmail());
 
         if (userFromDB.isEnabled()) {
-           User savedUser = userService.setNewPassword(authenticationRequestDTO);
+            User savedUser = userService.setNewPassword(authenticationRequestDTO);
+            UserDTO savedUserDTO = UserDTO.fromUser(savedUser);
+            return new ResponseEntity<>(savedUserDTO, HttpStatus.OK);
         }
 
-        return "Ok";
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @GetMapping("/auth/checkCode/{code}")
-    public String activate(@PathVariable String code) {
+    public String activate(@PathVariable(name = "code") String code) {
         boolean isActivated = activationUserAccountService.activateUser(code);
         if (isActivated) {
-            return  "User successfully activated";
+            return "User successfully activated";
         } else {
-            return  "Activation code is not found!";
+            return "Activation code is not found!";
         }
     }
 }

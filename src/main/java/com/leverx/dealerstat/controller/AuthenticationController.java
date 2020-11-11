@@ -23,9 +23,9 @@ import java.util.Map;
 @RestController
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserService userService;
+    private AuthenticationManager authenticationManager;
+    private JwtTokenProvider jwtTokenProvider;
+    private UserService userService;
 
     private static final Logger logger = LogManager.getLogger(AuthenticationController.class);
 
