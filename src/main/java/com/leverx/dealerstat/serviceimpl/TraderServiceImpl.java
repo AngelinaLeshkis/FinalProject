@@ -8,6 +8,7 @@ import com.leverx.dealerstat.service.TraderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,33 +52,59 @@ public class TraderServiceImpl implements TraderService {
 
     @Override
     public Trader approveTrader(Long id) {
-        Trader savedTrader = traderRepo.findById(id).orElse(null);
+        Trader savedTrader = traderRepo.findById(id).orElseThrow(() ->
+                new RuntimeException("Trader not found with id = " + id));
         savedTrader.setApproved(true);
-        traderRepo.save(savedTrader);
 
-        return savedTrader;
+        return traderRepo.save(savedTrader);
     }
 
     @Override
     public Trader declineTrader(Long id) {
-        Trader savedTrader = traderRepo.findById(id).orElse(null);
+        Trader savedTrader = traderRepo.findById(id).orElseThrow(() ->
+                new RuntimeException("Trader not found with id = " + id));
         savedTrader.setApproved(false);
-        traderRepo.save(savedTrader);
 
-        return savedTrader;
+        return traderRepo.save(savedTrader);
     }
 
-//    public float getTraderRating(Long id) {
-//        Trader savedTrader = traderRepo.findById(id).orElse(null);
-//        List<Comment> comments = commentRepo.findCommentsByTraderId(id);
-//        long countOfComments = 0;
-//        long sumOfRating = 0;
-//
-//        if (savedTrader.isApproved() ) {
-//                comments = comments.stream()
-//                        .filter(comment -> comment.isApproved())
-//                        .collect(Collectors.toList());
-//        }
-//
-//    }
+    @Override
+    public void setTraderRating(Long traderId) {
+        Trader savedTrader = traderRepo.findById(traderId).orElseThrow(() ->
+                new RuntimeException("Trader not found with id = " + traderId));
+        List<Comment> comments;
+        float sumOfTraderRating = 0;
+
+        if (savedTrader.isApproved()) {
+            comments = getApprovedCommentsOfTrader(traderId);
+
+            for (Comment comment : comments) {
+                sumOfTraderRating += comment.getRating();
+            }
+
+            savedTrader.setRatingOfTrader(sumOfTraderRating / comments.size());
+            traderRepo.save(savedTrader);
+        }
+    }
+
+    @Override
+    public List<Comment> getApprovedCommentsOfTrader(Long traderId) {
+        List<Comment> commentsOfTrader = commentRepo.findCommentsByTraderId(traderId);
+        return commentsOfTrader.stream().filter(Comment::isApproved).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Trader> getTopOfTraders() {
+        List<Trader> traders = getApprovedTraders();
+
+        return traders.stream()
+                .sorted(Comparator.comparing(Trader::getRatingOfTrader).reversed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Trader> getApprovedTraders() {
+        List<Trader> traders = traderRepo.findAll();
+        return traders.stream().filter(Trader::isApproved).collect(Collectors.toList());
+    }
 }

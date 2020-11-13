@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -16,6 +17,7 @@ public class Trader {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nameOfTrader;
+    private float ratingOfTrader;
     @CreationTimestamp
     @Column(name = "created_at")
     private Date createdAt;
@@ -23,6 +25,9 @@ public class Trader {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "trader")
     private List<Comment> comments;
+
+    public Trader() {
+    }
 
     public Long getId() {
         return id;
@@ -63,4 +68,13 @@ public class Trader {
     public void setApproved(boolean approved) {
         this.approved = approved;
     }
+
+    public Float getRatingOfTrader() {
+        return ratingOfTrader;
+    }
+
+    public void setRatingOfTrader(Float ratingOfTrader) {
+        this.ratingOfTrader = ratingOfTrader;
+    }
+
 }

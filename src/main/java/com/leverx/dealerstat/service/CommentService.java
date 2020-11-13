@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.service;
 
+import com.leverx.dealerstat.dto.CommentForNewTraderDTO;
 import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
 
@@ -24,4 +25,5 @@ public interface CommentService {
 
     Comment declineComment(Long id);
 
+    Comment saveCommentWithAddingNewTrader(CommentForNewTraderDTO commentForNewTrader);
 }

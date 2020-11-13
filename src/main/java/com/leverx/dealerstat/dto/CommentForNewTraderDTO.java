@@ -4,28 +4,14 @@ import com.leverx.dealerstat.entity.Comment;
 
 import java.sql.Date;
 
-public class CreateCommentDTO {
+public class CommentForNewTraderDTO {
 
     private Long id;
     private String text;
     private double rating;
     private Date dateOfCreation;
     private boolean approved;
-    private Long traderId;
-
-    public CreateCommentDTO() {
-
-    }
-
-    public CreateCommentDTO(Long id, String text, double rating, Date dateOfCreation,
-                            boolean approved, Long traderId) {
-        this.id = id;
-        this.text = text;
-        this.rating = rating;
-        this.dateOfCreation = dateOfCreation;
-        this.approved = approved;
-        this.traderId = traderId;
-    }
+    private String nameOfTrader;
 
     public Long getId() {
         return id;
@@ -51,14 +37,6 @@ public class CreateCommentDTO {
         this.rating = rating;
     }
 
-    public Date getDateOfCreation() {
-        return dateOfCreation;
-    }
-
-    public void setDateOfCreation(Date dateOfCreation) {
-        this.dateOfCreation = dateOfCreation;
-    }
-
     public boolean isApproved() {
         return approved;
     }
@@ -67,11 +45,29 @@ public class CreateCommentDTO {
         this.approved = approved;
     }
 
-    public Long getTraderId() {
-        return traderId;
+    public String getNameOfTrader() {
+        return nameOfTrader;
     }
 
-    public void setTraderId(Long traderId) {
-        this.traderId = traderId;
+    public void setNameOfTrader(String nameOfTrader) {
+        this.nameOfTrader = nameOfTrader;
     }
+
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
+    }
+
+    //    public Comment toComment(CommentForNewTraderDTO commentForNewTrader) {
+//        Comment comment = new Comment();
+//
+//        comment.setId(id);
+//        comment.setText(text);
+//        comment.setRating(rating);
+//
+//        return comment;
+//    }
 }

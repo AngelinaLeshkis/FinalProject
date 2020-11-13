@@ -1,6 +1,7 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.dto.CreateCommentDTO;
+import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.entity.Trader;
 import com.leverx.dealerstat.service.CommentService;
 import com.leverx.dealerstat.service.TraderService;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admin")
@@ -73,5 +76,33 @@ public class AdminController {
 
         return  new ResponseEntity<>(savedComment, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/trader/comments/{id}")
+    public List<Comment> getApprovedComments(@PathVariable(value = "id") Long id) {
+        Trader trader = traderService.getTraderById(id);
+        List<Comment> comments = traderService.getApprovedCommentsOfTrader(id);
+
+        if(trader.isApproved()) {
+            return comments;
+        }
+
+        return null;
+    }
+
+    @GetMapping(value = "/topOfTraders")
+    public List<Trader> getTopOfTraders() {
+        return traderService.getTopOfTraders();
+    }
+
+    @GetMapping(value = "/traders/approvedTraders")
+    public List<Trader> getApprovedTraders() {
+        return traderService.getApprovedTraders();
+    }
+    
+//    @GetMapping(value = "/trader/rating/{id}")
+//    public Float getTraderRating(@PathVariable(value = "id") Long id) {
+//        return traderService.getTraderRating(id);
+//    }
+
 
 }

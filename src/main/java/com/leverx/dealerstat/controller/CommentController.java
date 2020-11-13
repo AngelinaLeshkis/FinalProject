@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.controller;
 
+import com.leverx.dealerstat.dto.CommentForNewTraderDTO;
 import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.service.CommentService;
@@ -41,5 +42,11 @@ public class CommentController {
     public void deleteComment(@PathVariable(name = "id") Long id) {
         commentService.deleteCommentByCommentId(id);
     }
+
+    @PostMapping(value = "/comments/commentWithTrader")
+    public Comment saveCommentForNewTrader(@RequestBody CommentForNewTraderDTO commentForNewTraderDTO) {
+        return commentService.saveCommentWithAddingNewTrader(commentForNewTraderDTO);
+    }
+
 
 }

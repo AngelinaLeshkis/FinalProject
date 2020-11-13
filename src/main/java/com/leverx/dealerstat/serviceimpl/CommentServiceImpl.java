@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.serviceimpl;
 
+import com.leverx.dealerstat.dto.CommentForNewTraderDTO;
 import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.entity.Trader;
@@ -28,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment saveComment(CreateCommentDTO commentDTO) {
         Trader trader = traderRepo.findById(commentDTO.getTraderId())
-                .orElseThrow(() -> new RuntimeException("User not found with id = " + commentDTO.getTraderId()));
+                .orElseThrow(() -> new RuntimeException("Trader not found with id = " + commentDTO.getTraderId()));
 
         if (trader.isApproved()) {
             Comment comment = new Comment();
@@ -38,9 +39,10 @@ public class CommentServiceImpl implements CommentService {
             comment.setRating(commentDTO.getRating());
             comment.setText(commentDTO.getText());
             return commentRepo.save(comment);
-        } else {
-            return null;
         }
+
+            return null;
+
     }
 
     @Override
@@ -90,19 +92,73 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment approveComment(Long id) {
-        Comment savedComment = commentRepo.findById(id).orElse(null);
-        savedComment.setApproved(true);
-        commentRepo.save(savedComment);
+        Comment savedComment = commentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found with id = " + id));
 
-        return savedComment;
+        if (savedComment.getTrader().isApproved()) {
+            savedComment.setApproved(true);
+        }
+
+        return commentRepo.save(savedComment);
     }
 
     @Override
     public Comment declineComment(Long id) {
-        Comment savedComment = commentRepo.findById(id).orElse(null);
-        savedComment.setApproved(false);
-        commentRepo.save(savedComment);
+        Comment savedComment = commentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found with id = " + id));
 
-        return savedComment;
+        if (savedComment.getTrader().isApproved()) {
+            savedComment.setApproved(false);
+        }
+
+        return commentRepo.save(savedComment);
+}
+
+    @Override
+    public Comment saveCommentWithAddingNewTrader(CommentForNewTraderDTO commentForNewTrader) {
+
+        if (traderRepo.findTraderByNameOfTrader(commentForNewTrader.getNameOfTrader()) != null) {
+                return saveCommentOfExistedTrader(commentForNewTrader);
+        }
+
+        Trader newTrader = new Trader();
+        newTrader.setApproved(commentForNewTrader.isApproved());
+        newTrader.setCreatedAt(commentForNewTrader.getDateOfCreation());
+        newTrader.setNameOfTrader(commentForNewTrader.getNameOfTrader());
+        traderRepo.save(newTrader);
+
+        Comment comment = saveCommentAndNewTrader(commentForNewTrader);
+        comment.setTrader(newTrader);
+
+        return commentRepo.save(comment);
     }
+
+    public Comment saveCommentOfExistedTrader(CommentForNewTraderDTO commentForNewTrader) {
+        Trader traderFromDB = traderRepo.findTraderByNameOfTrader(commentForNewTrader.getNameOfTrader());
+        Comment comment = new Comment();
+        comment.setTrader(traderFromDB);
+        comment.setId(commentForNewTrader.getId());
+        comment.setRating(commentForNewTrader.getRating());
+        comment.setText(commentForNewTrader.getText());
+        comment.setDateOfCreation(commentForNewTrader.getDateOfCreation());
+        comment.setApproved(commentForNewTrader.isApproved());
+
+        commentRepo.save(comment);
+
+        return comment;
+    }
+
+    public Comment saveCommentAndNewTrader(CommentForNewTraderDTO commentForNewTrader) {
+        Comment comment = new Comment();
+        comment.setId(commentForNewTrader.getId());
+        comment.setRating(commentForNewTrader.getRating());
+        comment.setText(commentForNewTrader.getText());
+        comment.setDateOfCreation(commentForNewTrader.getDateOfCreation());
+        comment.setApproved(commentForNewTrader.isApproved());
+
+        return comment;
+    }
+
+
+
 }

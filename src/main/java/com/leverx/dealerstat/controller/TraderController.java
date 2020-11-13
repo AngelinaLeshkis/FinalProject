@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/traders")
 public class TraderController {
@@ -26,7 +28,12 @@ public class TraderController {
 
     @GetMapping(value = "")
     public Iterable<Trader> getTraders() {
-        return traderService.getTraders();
+        Iterable<Trader> traders = traderService.getTraders();
+
+        for (Trader trader : traders) {
+            traderService.setTraderRating(trader.getId());
+        }
+        return traders;
     }
 
     @GetMapping(value = "/trader/{id}")
@@ -36,6 +43,7 @@ public class TraderController {
         if (trader == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
+            traderService.setTraderRating(id);
             return new ResponseEntity<>(trader, HttpStatus.OK);
         }
     }
