@@ -1,8 +1,6 @@
 package com.leverx.dealerstat.controller;
 
-import com.leverx.dealerstat.pojo.VerificationToken;
 import com.leverx.dealerstat.service.ActivationUserAccountService;
-import com.leverx.dealerstat.serviceimpl.ActivationUserAccountServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +16,9 @@ public class RegistrationController {
         this.activationUserAccountService = activationUserAccountService;
     }
 
-    @GetMapping("/activate/{code}")
+    @GetMapping("/registration/activate/{code}")
     public String activate(@PathVariable(name = "code") String code) {
-        boolean isActivated = activationUserAccountService.activateUser(code);
+        boolean isActivated = activationUserAccountService.activateCode(code);
         if (isActivated) {
             return  "User successfully activated";
         } else {

@@ -2,6 +2,7 @@ package com.leverx.dealerstat.dto;
 
 import com.leverx.dealerstat.entity.Comment;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 public class CreateCommentDTO {

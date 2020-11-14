@@ -82,6 +82,7 @@ public class TraderServiceImpl implements TraderService {
                 sumOfTraderRating += comment.getRating();
             }
 
+
             savedTrader.setRatingOfTrader(sumOfTraderRating / comments.size());
             traderRepo.save(savedTrader);
         }
@@ -105,6 +106,10 @@ public class TraderServiceImpl implements TraderService {
     @Override
     public List<Trader> getApprovedTraders() {
         List<Trader> traders = traderRepo.findAll();
+        for (Trader trader : traders) {
+            setTraderRating(trader.getId());
+        }
+
         return traders.stream().filter(Trader::isApproved).collect(Collectors.toList());
     }
 }

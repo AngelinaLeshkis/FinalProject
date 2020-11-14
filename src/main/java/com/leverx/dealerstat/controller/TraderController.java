@@ -3,10 +3,12 @@ package com.leverx.dealerstat.controller;
 import com.leverx.dealerstat.entity.Trader;
 import com.leverx.dealerstat.service.TraderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,19 +23,14 @@ public class TraderController {
     }
 
     @PostMapping(value = "/addTrader")
-    public Trader saveTrader(@RequestBody Trader trader) {
+    public Trader saveTrader(@Valid @RequestBody Trader trader) {
         traderService.saveTrader(trader);
         return trader;
     }
 
     @GetMapping(value = "")
     public Iterable<Trader> getTraders() {
-        Iterable<Trader> traders = traderService.getTraders();
-
-        for (Trader trader : traders) {
-            traderService.setTraderRating(trader.getId());
-        }
-        return traders;
+        return traderService.getTraders();
     }
 
     @GetMapping(value = "/trader/{id}")

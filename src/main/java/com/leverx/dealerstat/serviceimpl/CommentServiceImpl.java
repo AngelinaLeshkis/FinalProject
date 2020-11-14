@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
             return commentRepo.save(comment);
         }
 
-            return null;
+        return null;
 
     }
 
@@ -112,13 +112,13 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return commentRepo.save(savedComment);
-}
+    }
 
     @Override
     public Comment saveCommentWithAddingNewTrader(CommentForNewTraderDTO commentForNewTrader) {
 
         if (traderRepo.findTraderByNameOfTrader(commentForNewTrader.getNameOfTrader()) != null) {
-                return saveCommentOfExistedTrader(commentForNewTrader);
+            return saveCommentOfExistedTrader(commentForNewTrader);
         }
 
         Trader newTrader = new Trader();
@@ -158,7 +158,6 @@ public class CommentServiceImpl implements CommentService {
 
         return comment;
     }
-
 
 
 }

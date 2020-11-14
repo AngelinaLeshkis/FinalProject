@@ -1,4 +1,4 @@
-package com.leverx.dealerstat;
+package com.leverx.dealerstat.serviceimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +12,12 @@ public class SendEmailService {
     @Value("${spring.mail.username}")
     private String username;
 
-    @Autowired
     private JavaMailSender sender;
+
+    @Autowired
+    public SendEmailService(JavaMailSender sender) {
+        this.sender = sender;
+    }
 
     public void sendEmail(String to, String body, String topic) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

@@ -4,8 +4,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Date;
-import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -16,6 +16,8 @@ public class Trader {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message="Name of trader is a required field")
     private String nameOfTrader;
     private float ratingOfTrader;
     @CreationTimestamp

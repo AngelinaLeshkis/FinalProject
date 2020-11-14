@@ -9,7 +9,7 @@ public interface ActivationUserAccountService {
 
     String createVerificationTokenForUser(User user);
 
-    boolean activateUser(String token);
+    boolean activateCode(String token);
 
     void sendEmailToConfirmPasswordReset(String token, User user);
 

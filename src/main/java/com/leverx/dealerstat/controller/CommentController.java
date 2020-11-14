@@ -7,6 +7,8 @@ import com.leverx.dealerstat.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(path = "/users")
 public class CommentController {
@@ -19,7 +21,7 @@ public class CommentController {
     }
 
     @PostMapping(value = "/comment")
-    public Comment saveComment(@RequestBody CreateCommentDTO commentDTO) {
+    public Comment saveComment(@Valid @RequestBody CreateCommentDTO commentDTO) {
         return commentService.saveComment(commentDTO);
     }
 
@@ -44,7 +46,7 @@ public class CommentController {
     }
 
     @PostMapping(value = "/comments/commentWithTrader")
-    public Comment saveCommentForNewTrader(@RequestBody CommentForNewTraderDTO commentForNewTraderDTO) {
+    public Comment saveCommentForNewTrader(@Valid @RequestBody CommentForNewTraderDTO commentForNewTraderDTO) {
         return commentService.saveCommentWithAddingNewTrader(commentForNewTraderDTO);
     }
 

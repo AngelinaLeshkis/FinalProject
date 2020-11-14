@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 public class UserController {
 
@@ -20,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/registration")
-    public ResponseEntity<UserDTO> saveUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody User user) {
         User savedUser = userService.saveUser(user);
 
         if (savedUser == null) {

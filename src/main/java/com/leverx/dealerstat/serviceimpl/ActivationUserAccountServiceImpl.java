@@ -1,7 +1,5 @@
 package com.leverx.dealerstat.serviceimpl;
 
-import com.leverx.dealerstat.SendEmailService;
-import com.leverx.dealerstat.dto.AuthenticationRequestDTO;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.pojo.VerificationToken;
 import com.leverx.dealerstat.persistence.UserRepository;
@@ -36,7 +34,7 @@ public class ActivationUserAccountServiceImpl implements ActivationUserAccountSe
             String message = String.format(
                     "Hello, %s %s! \n" +
                             "Welcome to DealerStat. Please, visit the next link to activate your account: " +
-                            "http://localhost:8080/activate/%s",
+                            "http://localhost:8080/registration/activate/%s",
                     user.getFirstName(),
                     user.getLastName(),
                     token
@@ -55,7 +53,7 @@ public class ActivationUserAccountServiceImpl implements ActivationUserAccountSe
     }
 
     @Override
-    public boolean activateUser(String token) {
+    public boolean activateCode(String token) {
         Date date = new Date();
         VerificationToken verificationToken = getVerificationTokenFromRedis(token);
         if ((date.getTime() - verificationToken.getTimeOfCreation().getTime()) > VerificationToken.getExpiredTime()) {

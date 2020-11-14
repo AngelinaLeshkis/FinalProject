@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 public class ForgotPasswordController {
 
@@ -25,7 +27,8 @@ public class ForgotPasswordController {
     }
 
     @PostMapping(value = "/auth/forgotPassword")
-    public String sendEmailWithTokenToResetPassword(@RequestBody ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
+    public String sendEmailWithTokenToResetPassword(@Valid @RequestBody
+                                                                ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
         User savedUser = userService.getUserByEmail(forgotPasswordRequestDTO.getEmail());
 
         if (savedUser == null) {
@@ -38,7 +41,8 @@ public class ForgotPasswordController {
     }
 
     @PostMapping(value = "/auth/reset")
-    public ResponseEntity<UserDTO> resetPassword(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+    public ResponseEntity<UserDTO> resetPassword(@Valid @RequestBody
+                                                             AuthenticationRequestDTO authenticationRequestDTO) {
         User userFromDB = userService.getUserByEmail(authenticationRequestDTO.getEmail());
 
         if (userFromDB.isEnabled()) {
@@ -52,9 +56,9 @@ public class ForgotPasswordController {
 
     @GetMapping("/auth/checkCode/{code}")
     public String activate(@PathVariable(name = "code") String code) {
-        boolean isActivated = activationUserAccountService.activateUser(code);
+        boolean isActivated = activationUserAccountService.activateCode(code);
         if (isActivated) {
-            return "User successfully activated";
+            return "Password can be changed";
         } else {
             return "Activation code is not found!";
         }

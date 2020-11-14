@@ -4,23 +4,23 @@ import com.leverx.dealerstat.dto.AuthenticationRequestDTO;
 import com.leverx.dealerstat.entity.Role;
 import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.persistence.UserRepository;
-import com.leverx.dealerstat.pojo.VerificationToken;
+import com.leverx.dealerstat.service.ActivationUserAccountService;
 import com.leverx.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepo;
-    private BCryptPasswordEncoder passwordEncoder;
-    private ActivationUserAccountServiceImpl activationUserAccountService;
+    private PasswordEncoder passwordEncoder;
+    private ActivationUserAccountService activationUserAccountService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepo, BCryptPasswordEncoder passwordEncoder,
-                           ActivationUserAccountServiceImpl activationUserAccountService) {
+    public UserServiceImpl(UserRepository userRepo, PasswordEncoder passwordEncoder,
+                           ActivationUserAccountService activationUserAccountService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.activationUserAccountService = activationUserAccountService;

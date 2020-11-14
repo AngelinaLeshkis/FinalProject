@@ -1,64 +1,33 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.dto.AuthenticationRequestDTO;
-import com.leverx.dealerstat.entity.User;
-import com.leverx.dealerstat.security.JwtTokenProvider;
-import com.leverx.dealerstat.service.UserService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.leverx.dealerstat.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.validation.Valid;
 
 @RestController
 public class AuthenticationController {
 
-    private AuthenticationManager authenticationManager;
-    private JwtTokenProvider jwtTokenProvider;
-    private UserService userService;
-
-    private static final Logger logger = LogManager.getLogger(AuthenticationController.class);
+    private AuthorizationService authorizationService;
 
     @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider,
-                                    UserService userService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
+    public AuthenticationController(AuthorizationService authorizationService) {
+        this.authorizationService = authorizationService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody AuthenticationRequestDTO requestDTO) {
-        try {
-            String email = requestDTO.getEmail();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, requestDTO.getPassword()));
-            User user = userService.getUserByEmail(email);
-
-            if (user == null) {
-                throw new UsernameNotFoundException("User with email: " + email + " not found");
-            }
-
-            String token = jwtTokenProvider.createToken(email, user.getRole().getValueOfRole());
-            logger.info(user.getRole().getValueOfRole());
-
-            Map<Object, Object> response = new HashMap<>();
-            response.put("email", email);
-            response.put("token", token);
-
-            return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-            System.out.println(e);
-            throw new BadCredentialsException("Invalid email or password", e);
+    public ResponseEntity<String> login(@Valid @RequestBody AuthenticationRequestDTO requestDTO) {
+        if (authorizationService.login(requestDTO) == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        String token = authorizationService.login(requestDTO).get("token");
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 }

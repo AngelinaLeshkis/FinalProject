@@ -4,8 +4,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.sql.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "user", catalog = "dealerstatdb")
@@ -15,9 +17,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message="First name cannot be missing or empty")
     private String firstName;
+
+    @NotBlank(message="First name cannot be missing or empty")
     private String lastName;
+
+    @NotBlank(message="Password is a required field")
+    @Size(min=8, message="Password must be equal to or greater than 8 characters")
     private String password;
+
+    @NotBlank(message="Email is a required field")
+    @Pattern(regexp = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
     private String email;
     private boolean enabled;
     @CreationTimestamp
