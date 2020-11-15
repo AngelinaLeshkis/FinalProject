@@ -31,10 +31,13 @@ public class User {
     @NotBlank(message = "Email is a required field")
     @Pattern(regexp = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
     private String email;
+
     private boolean enabled;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private Date createdAt;
+
     private Role role;
 
     public User() {
