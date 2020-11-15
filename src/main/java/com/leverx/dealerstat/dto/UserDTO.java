@@ -9,7 +9,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
 
-    public User toUser(){
+    public User toUser() {
         User user = new User();
         user.setId(id);
         user.setEmail(email);

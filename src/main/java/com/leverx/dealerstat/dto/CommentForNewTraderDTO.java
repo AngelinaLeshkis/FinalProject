@@ -1,7 +1,5 @@
 package com.leverx.dealerstat.dto;
 
-import com.leverx.dealerstat.entity.Comment;
-
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 
@@ -9,15 +7,14 @@ public class CommentForNewTraderDTO {
 
     private Long id;
 
-    @NotBlank(message="Text field cannot be empty")
+    @NotBlank(message = "Text field cannot be empty")
     private String text;
 
-    @NotBlank(message="Rating cannot be empty")
     private double rating;
     private Date dateOfCreation;
     private boolean approved;
 
-    @NotBlank(message="Name of trader is a required field")
+    @NotBlank(message = "Name of trader is a required field")
     private String nameOfTrader;
 
     public Long getId() {

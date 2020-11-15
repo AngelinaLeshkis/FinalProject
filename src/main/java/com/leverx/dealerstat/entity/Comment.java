@@ -17,7 +17,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message="Text field cannot be empty")
+    @NotBlank(message = "Text field cannot be empty")
     private String text;
     private double rating;
     @CreationTimestamp

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping(path = "/auth")
 public class ForgotPasswordController {
 
     private UserService userService;
@@ -26,9 +27,9 @@ public class ForgotPasswordController {
         this.activationUserAccountService = activationUserAccountService;
     }
 
-    @PostMapping(value = "/auth/forgotPassword")
+    @PostMapping(value = "/forgotPassword")
     public String sendEmailWithTokenToResetPassword(@Valid @RequestBody
-                                                                ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
+                                                            ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
         User savedUser = userService.getUserByEmail(forgotPasswordRequestDTO.getEmail());
 
         if (savedUser == null) {
@@ -40,9 +41,9 @@ public class ForgotPasswordController {
         return "Ok";
     }
 
-    @PostMapping(value = "/auth/reset")
+    @PostMapping(value = "/reset")
     public ResponseEntity<UserDTO> resetPassword(@Valid @RequestBody
-                                                             AuthenticationRequestDTO authenticationRequestDTO) {
+                                                         AuthenticationRequestDTO authenticationRequestDTO) {
         User userFromDB = userService.getUserByEmail(authenticationRequestDTO.getEmail());
 
         if (userFromDB.isEnabled()) {
@@ -54,7 +55,7 @@ public class ForgotPasswordController {
         return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @GetMapping("/auth/checkCode/{code}")
+    @GetMapping("/checkCode/{code}")
     public String activate(@PathVariable(name = "code") String code) {
         boolean isActivated = activationUserAccountService.activateCode(code);
         if (isActivated) {

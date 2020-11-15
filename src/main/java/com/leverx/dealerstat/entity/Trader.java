@@ -17,9 +17,8 @@ public class Trader {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message="Name of trader is a required field")
+    @NotBlank(message = "Name of trader is a required field")
     private String nameOfTrader;
-    private float ratingOfTrader;
     @CreationTimestamp
     @Column(name = "created_at")
     private Date createdAt;
@@ -69,14 +68,6 @@ public class Trader {
 
     public void setApproved(boolean approved) {
         this.approved = approved;
-    }
-
-    public Float getRatingOfTrader() {
-        return ratingOfTrader;
-    }
-
-    public void setRatingOfTrader(Float ratingOfTrader) {
-        this.ratingOfTrader = ratingOfTrader;
     }
 
 }

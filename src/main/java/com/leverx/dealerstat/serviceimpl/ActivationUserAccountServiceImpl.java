@@ -4,6 +4,7 @@ import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.pojo.VerificationToken;
 import com.leverx.dealerstat.persistence.UserRepository;
 import com.leverx.dealerstat.service.ActivationUserAccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,11 @@ public class ActivationUserAccountServiceImpl implements ActivationUserAccountSe
     private SendEmailService mailSender;
     private UserRepository userRepo;
 
+    @Autowired
     public ActivationUserAccountServiceImpl(RedisTemplate<Long, String> redisTemplate, SendEmailService mailSender,
                                             UserRepository userRepo) {
         this.redisTemplate = redisTemplate;
-        this.hashOperations =redisTemplate.opsForHash();
+        this.hashOperations = redisTemplate.opsForHash();
         this.mailSender = mailSender;
         this.userRepo = userRepo;
     }

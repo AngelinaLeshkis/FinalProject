@@ -1,9 +1,10 @@
 package com.leverx.dealerstat.controller;
 
+import com.leverx.dealerstat.dto.TraderDTO;
+import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.entity.Trader;
 import com.leverx.dealerstat.service.TraderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,30 +24,45 @@ public class TraderController {
     }
 
     @PostMapping(value = "/addTrader")
-    public Trader saveTrader(@Valid @RequestBody Trader trader) {
-        traderService.saveTrader(trader);
-        return trader;
-    }
+    public ResponseEntity<Trader> saveTrader(@Valid @RequestBody Trader trader) {
+        Trader traderFromDB = traderService.saveTrader(trader);
 
-    @GetMapping(value = "")
-    public Iterable<Trader> getTraders() {
-        return traderService.getTraders();
+        if (traderFromDB == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(traderFromDB, HttpStatus.OK);
     }
 
     @GetMapping(value = "/trader/{id}")
-    public ResponseEntity<Trader> getUserById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<Trader> getTraderById(@PathVariable(name = "id") Long id) {
         Trader trader = traderService.getTraderById(id);
 
         if (trader == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            traderService.setTraderRating(id);
-            return new ResponseEntity<>(trader, HttpStatus.OK);
         }
+
+        return new ResponseEntity<>(trader, HttpStatus.OK);
+
     }
 
-    @DeleteMapping(value = "/deleteTrader/{id}")
-    public void deleteTrader(@PathVariable(name = "id") Long id) {
-        traderService.deleteTrader(id);
+    @GetMapping(value = "/topOfTraders")
+    public List<TraderDTO> getTopOfTraders() {
+        return traderService.getTopOfTraders();
+    }
+
+    @GetMapping(value = "/approvedTraders")
+    public List<Trader> getApprovedTraders() {
+        return traderService.getApprovedTraders();
+    }
+
+    @GetMapping(value = "/trader/comments/{id}")
+    public ResponseEntity<List<Comment>> getApprovedComments(@PathVariable(value = "id") Long id) {
+        Trader trader = traderService.getTraderById(id);
+
+        if (trader.isApproved()) {
+            return new ResponseEntity<>(traderService.getApprovedCommentsOfTrader(id), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,7 +1,6 @@
 package com.leverx.dealerstat.service;
 
 import com.leverx.dealerstat.entity.User;
-import com.leverx.dealerstat.pojo.VerificationToken;
 
 public interface ActivationUserAccountService {
 

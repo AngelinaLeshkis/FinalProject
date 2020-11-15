@@ -18,17 +18,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message="First name cannot be missing or empty")
+    @NotBlank(message = "First name cannot be missing or empty")
     private String firstName;
 
-    @NotBlank(message="First name cannot be missing or empty")
+    @NotBlank(message = "First name cannot be missing or empty")
     private String lastName;
 
-    @NotBlank(message="Password is a required field")
-    @Size(min=8, message="Password must be equal to or greater than 8 characters")
+    @NotBlank(message = "Password is a required field")
+    @Size(min = 8, message = "Password must be equal to or greater than 8 characters")
     private String password;
 
-    @NotBlank(message="Email is a required field")
+    @NotBlank(message = "Email is a required field")
     @Pattern(regexp = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
     private String email;
     private boolean enabled;

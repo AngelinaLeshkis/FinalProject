@@ -5,12 +5,14 @@ import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping(path = "/anonymous")
 public class CommentController {
 
     private CommentService commentService;
@@ -21,34 +23,46 @@ public class CommentController {
     }
 
     @PostMapping(value = "/comment")
-    public Comment saveComment(@Valid @RequestBody CreateCommentDTO commentDTO) {
-        return commentService.saveComment(commentDTO);
-    }
+    public ResponseEntity<Comment> saveComment(@Valid @RequestBody CreateCommentDTO commentDTO) {
+        Comment savedComment = commentService.saveComment(commentDTO);
 
-    @GetMapping("/comments")
-    Iterable<CreateCommentDTO> getAllComments() {
-        return commentService.getComments();
-    }
-
-    @GetMapping(value = "/comments/{id}")
-    public CreateCommentDTO getCommentById(@PathVariable(name = "id") Long id) {
-        return commentService.getCommentByCommentId(id);
+        if (savedComment == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(savedComment, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/comments")
-    public Iterable<Comment> getCommentsByUserId(@PathVariable(name = "id") Long id) {
-        return commentService.getCommentsByTraderId(id);
+    public ResponseEntity<Iterable<Comment>> getCommentsByTraderId(@PathVariable(name = "id") Long id) {
+        Iterable<Comment> comments = commentService.getCommentsByTraderId(id);
+
+        if (comments == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/comments/{id}")
-    public void deleteComment(@PathVariable(name = "id") Long id) {
-        commentService.deleteCommentByCommentId(id);
+    @PostMapping(value = "/commentWithTrader")
+    public ResponseEntity<Comment> saveCommentForNewTrader(@Valid @RequestBody
+                                                                   CommentForNewTraderDTO commentForNewTraderDTO) {
+        Comment savedComment = commentService.saveCommentWithAddingNewTrader(commentForNewTraderDTO);
+
+        if (savedComment == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(savedComment, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/comments/commentWithTrader")
-    public Comment saveCommentForNewTrader(@Valid @RequestBody CommentForNewTraderDTO commentForNewTraderDTO) {
-        return commentService.saveCommentWithAddingNewTrader(commentForNewTraderDTO);
-    }
+    @GetMapping(value = "/comments/{id}")
+    public ResponseEntity<CreateCommentDTO> getCommentById(@PathVariable(name = "id") Long id) {
+        CreateCommentDTO commentDTO = commentService.getCommentByCommentId(id);
 
+        if (commentDTO == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(commentDTO, HttpStatus.OK);
+    }
 
 }

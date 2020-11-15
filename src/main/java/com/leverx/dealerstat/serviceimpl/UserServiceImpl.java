@@ -53,11 +53,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-        userRepo.deleteById(id);
-    }
-
-    @Override
     public void updateUser(User user) {
         userRepo.save(user);
     }
@@ -69,7 +64,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepo.findById(id).orElse(null);
+        return userRepo.findById(id).orElseThrow(() ->
+                new RuntimeException("User not found with id = " + id));
     }
 
     @Override

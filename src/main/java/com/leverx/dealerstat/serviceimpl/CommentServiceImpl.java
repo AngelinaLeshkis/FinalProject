@@ -86,11 +86,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(Comment comment) {
-        return commentRepo.save(comment);
-    }
-
-    @Override
     public Comment approveComment(Long id) {
         Comment savedComment = commentRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comment not found with id = " + id));
@@ -137,7 +132,7 @@ public class CommentServiceImpl implements CommentService {
         Trader traderFromDB = traderRepo.findTraderByNameOfTrader(commentForNewTrader.getNameOfTrader());
         Comment comment = new Comment();
         comment.setTrader(traderFromDB);
-        comment.setId(commentForNewTrader.getId());
+        comment.setId(traderFromDB.getId());
         comment.setRating(commentForNewTrader.getRating());
         comment.setText(commentForNewTrader.getText());
         comment.setDateOfCreation(commentForNewTrader.getDateOfCreation());

@@ -6,5 +6,5 @@ import java.util.Map;
 
 public interface AuthorizationService {
 
-    Map<String , String> login(AuthenticationRequestDTO authenticationRequestDTO);
+    Map<String, String> login(AuthenticationRequestDTO authenticationRequestDTO);
 }

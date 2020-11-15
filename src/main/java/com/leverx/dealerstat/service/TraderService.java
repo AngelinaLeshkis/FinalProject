@@ -1,18 +1,15 @@
 package com.leverx.dealerstat.service;
 
+import com.leverx.dealerstat.dto.TraderDTO;
 import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.entity.Trader;
-import com.leverx.dealerstat.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TraderService {
     Trader saveTrader(Trader trader);
 
     void deleteTrader(Long id);
-
-    void updateTrader(Trader trader);
 
     Iterable<Trader> getTraders();
 
@@ -24,9 +21,7 @@ public interface TraderService {
 
     List<Comment> getApprovedCommentsOfTrader(Long traderId);
 
-    void setTraderRating(Long traderId);
-
-    List<Trader> getTopOfTraders();
+    List<TraderDTO> getTopOfTraders();
 
     List<Trader> getApprovedTraders();
 }

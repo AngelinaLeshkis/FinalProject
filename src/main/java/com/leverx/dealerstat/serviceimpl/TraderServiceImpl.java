@@ -1,5 +1,6 @@
 package com.leverx.dealerstat.serviceimpl;
 
+import com.leverx.dealerstat.dto.TraderDTO;
 import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.entity.Trader;
 import com.leverx.dealerstat.persistence.CommentRepository;
@@ -8,7 +9,6 @@ import com.leverx.dealerstat.service.TraderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,17 +26,18 @@ public class TraderServiceImpl implements TraderService {
 
     @Override
     public Trader saveTrader(Trader trader) {
+        Trader traderFromDB = traderRepo.findTraderByNameOfTrader(trader.getNameOfTrader());
+
+        if (traderFromDB != null) {
+            return null;
+        }
+
         return traderRepo.save(trader);
     }
 
     @Override
     public void deleteTrader(Long id) {
         traderRepo.deleteById(id);
-    }
-
-    @Override
-    public void updateTrader(Trader trader) {
-        traderRepo.save(trader);
     }
 
     @Override
@@ -69,47 +70,23 @@ public class TraderServiceImpl implements TraderService {
     }
 
     @Override
-    public void setTraderRating(Long traderId) {
-        Trader savedTrader = traderRepo.findById(traderId).orElseThrow(() ->
-                new RuntimeException("Trader not found with id = " + traderId));
-        List<Comment> comments;
-        float sumOfTraderRating = 0;
-
-        if (savedTrader.isApproved()) {
-            comments = getApprovedCommentsOfTrader(traderId);
-
-            for (Comment comment : comments) {
-                sumOfTraderRating += comment.getRating();
-            }
-
-
-            savedTrader.setRatingOfTrader(sumOfTraderRating / comments.size());
-            traderRepo.save(savedTrader);
-        }
-    }
-
-    @Override
     public List<Comment> getApprovedCommentsOfTrader(Long traderId) {
         List<Comment> commentsOfTrader = commentRepo.findCommentsByTraderId(traderId);
         return commentsOfTrader.stream().filter(Comment::isApproved).collect(Collectors.toList());
     }
 
     @Override
-    public List<Trader> getTopOfTraders() {
-        List<Trader> traders = getApprovedTraders();
-
-        return traders.stream()
-                .sorted(Comparator.comparing(Trader::getRatingOfTrader).reversed())
+    public List<TraderDTO> getTopOfTraders() {
+        List<Object[]> tradersFromDB = commentRepo.findAllTradersByRating();
+        return tradersFromDB.stream()
+                .map(TraderDTO::new)
                 .collect(Collectors.toList());
+
     }
 
     @Override
     public List<Trader> getApprovedTraders() {
         List<Trader> traders = traderRepo.findAll();
-        for (Trader trader : traders) {
-            setTraderRating(trader.getId());
-        }
-
         return traders.stream().filter(Trader::isApproved).collect(Collectors.toList());
     }
 }

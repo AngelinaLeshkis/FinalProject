@@ -5,7 +5,6 @@ import com.leverx.dealerstat.dto.CreateCommentDTO;
 import com.leverx.dealerstat.entity.Comment;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CommentService {
 
@@ -18,8 +17,6 @@ public interface CommentService {
     List<CreateCommentDTO> getComments();
 
     CreateCommentDTO getCommentByCommentId(Long id);
-
-    Comment updateComment(Comment comment);
 
     Comment approveComment(Long id);
 

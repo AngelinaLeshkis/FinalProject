@@ -1,16 +1,15 @@
 package com.leverx.dealerstat.controller;
 
 import com.leverx.dealerstat.dto.CreateCommentDTO;
-import com.leverx.dealerstat.entity.Comment;
 import com.leverx.dealerstat.entity.Trader;
+import com.leverx.dealerstat.entity.User;
 import com.leverx.dealerstat.service.CommentService;
 import com.leverx.dealerstat.service.TraderService;
+import com.leverx.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admin")
@@ -18,11 +17,13 @@ public class AdminController {
 
     private TraderService traderService;
     private CommentService commentService;
+    private UserService userService;
 
     @Autowired
-    public AdminController(TraderService traderService, CommentService commentService) {
+    public AdminController(TraderService traderService, CommentService commentService, UserService userService) {
         this.traderService = traderService;
         this.commentService = commentService;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/traders/approveTrader/{id}")
@@ -35,7 +36,7 @@ public class AdminController {
 
         traderService.approveTrader(id);
 
-        return  new ResponseEntity<>(savedTrader, HttpStatus.OK);
+        return new ResponseEntity<>(savedTrader, HttpStatus.OK);
     }
 
     @GetMapping(value = "/traders/declineTrader/{id}")
@@ -48,7 +49,7 @@ public class AdminController {
 
         traderService.declineTrader(id);
 
-        return  new ResponseEntity<>(savedTrader, HttpStatus.OK);
+        return new ResponseEntity<>(savedTrader, HttpStatus.OK);
     }
 
     @GetMapping(value = "/comments/approveComment/{id}")
@@ -61,7 +62,7 @@ public class AdminController {
 
         commentService.approveComment(id);
 
-        return  new ResponseEntity<>(savedComment, HttpStatus.OK);
+        return new ResponseEntity<>(savedComment, HttpStatus.OK);
     }
 
     @GetMapping(value = "/comments/declineComment/{id}")
@@ -74,35 +75,31 @@ public class AdminController {
 
         commentService.declineComment(id);
 
-        return  new ResponseEntity<>(savedComment, HttpStatus.OK);
+        return new ResponseEntity<>(savedComment, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/trader/comments/{id}")
-    public List<Comment> getApprovedComments(@PathVariable(value = "id") Long id) {
-        Trader trader = traderService.getTraderById(id);
-        List<Comment> comments = traderService.getApprovedCommentsOfTrader(id);
-
-        if(trader.isApproved()) {
-            return comments;
-        }
-
-        return null;
+    @DeleteMapping(value = "/comments/{id}")
+    public void deleteComment(@PathVariable(name = "id") Long id) {
+        commentService.deleteCommentByCommentId(id);
     }
 
-    @GetMapping(value = "/topOfTraders")
-    public List<Trader> getTopOfTraders() {
-        return traderService.getTopOfTraders();
+    @GetMapping("/comments")
+    Iterable<CreateCommentDTO> getAllComments() {
+        return commentService.getComments();
     }
 
-    @GetMapping(value = "/traders/approvedTraders")
-    public List<Trader> getApprovedTraders() {
-        return traderService.getApprovedTraders();
+    @GetMapping(value = "/allTraders")
+    public Iterable<Trader> getTraders() {
+        return traderService.getTraders();
     }
-    
-//    @GetMapping(value = "/trader/rating/{id}")
-//    public Float getTraderRating(@PathVariable(value = "id") Long id) {
-//        return traderService.getTraderRating(id);
-//    }
 
+    @DeleteMapping(value = "/deleteTrader/{id}")
+    public void deleteTrader(@PathVariable(name = "id") Long id) {
+        traderService.deleteTrader(id);
+    }
 
+    @GetMapping(value = "/users")
+    public Iterable<User> getUsers() {
+        return userService.getUsers();
+    }
 }
